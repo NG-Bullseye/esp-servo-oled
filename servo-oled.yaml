@@ -7,7 +7,7 @@
 #
 # Wiring — Servo MC-410:
 #   Brown  → GND
-#   Red    → VIN (5V from USB)
+#   Red    → VV (5V USB output, NOT VIN!)
 #   Orange → D7 (GPIO13, PWM Signal)
 #
 # Wiring — OLED Display:
@@ -30,6 +30,11 @@ esp8266:
 wifi:
   ssid: !env_var ESPHOME_WIFI_SSID
   password: !env_var ESPHOME_WIFI_PASSWORD
+  manual_ip:
+    static_ip: 192.168.1.51
+    gateway: 192.168.1.1
+    subnet: 255.255.255.0
+  min_auth_mode: WPA2
 
 api:
   encryption:
@@ -83,8 +88,8 @@ output:
 servo:
   - id: my_servo
     output: servo_pwm
-    min_level: 3.0%   # ~0.6ms pulse  → 0°
-    max_level: 11.5%  # ~2.3ms pulse  → 180°
+    min_level: 5.0%   # ~1.0ms pulse  → 0°
+    max_level: 10.0%  # ~2.0ms pulse  → 180°
 
 # ---------------------------------------------------------------------------
 # State — current angle

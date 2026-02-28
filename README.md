@@ -13,10 +13,10 @@ ESPHome project: MC-410 servo + SSD1306 OLED display on ESP32 NodeMCU, controlle
 | Cable | Color | NodeMCU Pin |
 |-------|-------|-------------|
 | GND | Brown | GND |
-| VCC | Red | VIN (5V from USB) |
+| VCC | Red | VV (5V from USB) |
 | Signal | Orange | D7 (GPIO13) |
 
-> ⚠️ Servo requires 5V — use VIN, not 3.3V. Signal at 3.3V logic level works fine with MC-410.
+> ⚠️ Servo requires 5V — use **VV**, NOT VIN! VIN on NodeMCU v2 is an input pin (reverse-biased diode, ~1.2V output). VV is the actual 5V USB output.
 >
 > **Note:** The colors above refer to the MC-410 servo connector wires (manufacturer colors). Your jumper cables from the ESP to the servo can be any color — e.g. a green jumper from ESP VIN connecting to the servo's red wire.
 
@@ -36,7 +36,7 @@ ESPHome project: MC-410 servo + SSD1306 OLED display on ESP32 NodeMCU, controlle
 ```
 ESP32 NodeMCU
 ┌─────────────────────┐
-│ VIN  ───────────────┼──── Servo Red    (5V)
+│ VV   ───────────────┼──── Servo Red    (5V)
 │ GND  ───────────────┼──┬─ Servo Brown  (GND)
 │                     │  └─ OLED Blue   (GND)
 │ D7 (GPIO13) ────────┼──── Servo Orange (Signal)
