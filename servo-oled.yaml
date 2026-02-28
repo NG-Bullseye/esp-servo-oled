@@ -7,7 +7,7 @@
 #
 # Wiring — Servo MC-410:
 #   Brown  → GND
-#   Green  → VIN (5V from USB)
+#   Red    → VIN (5V from USB)
 #   Orange → GPIO 13 (PWM Signal)
 #
 # Wiring — OLED Display:
