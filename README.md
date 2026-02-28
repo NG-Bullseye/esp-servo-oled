@@ -13,7 +13,7 @@ ESPHome project: MC-410 servo + SSD1306 OLED display on ESP32 NodeMCU, controlle
 | Cable | Color | ESP32 Pin |
 |-------|-------|-----------|
 | GND | Brown | GND |
-| VCC | Red | VIN (5V from USB) |
+| VCC | Green | VIN (5V from USB) |
 | Signal | Orange | GPIO 13 |
 
 > ⚠️ Servo requires 5V — use VIN, not 3.3V. Signal at 3.3V logic level works fine with MC-410.
@@ -34,7 +34,7 @@ ESPHome project: MC-410 servo + SSD1306 OLED display on ESP32 NodeMCU, controlle
 ```
 ESP32 NodeMCU
 ┌─────────────────────┐
-│ VIN  ───────────────┼──── Servo Red    (5V)
+│ VIN  ───────────────┼──── Servo Green  (5V)
 │ GND  ───────────────┼──┬─ Servo Brown  (GND)
 │                     │  └─ OLED Blue   (GND)
 │ GPIO13 ─────────────┼──── Servo Orange (Signal)
