@@ -20,6 +20,27 @@
 esphome:
   name: servo-oled
   friendly_name: Servo OLED
+  on_boot:
+    priority: 600
+    then:
+      - delay: 2s
+      - lambda: |-
+          ESP_LOGI("boot", "Boot test starting...");
+          id(boot_testing) = true;
+          id(my_servo).write(-1.0);
+          id(current_angle) = 0.0;
+      - delay: 1s
+      - lambda: |-
+          ESP_LOGI("boot", "Moving to 180...");
+          id(my_servo).write(1.0);
+          id(current_angle) = 180.0;
+      - delay: 1s
+      - lambda: |-
+          ESP_LOGI("boot", "Back to 0...");
+          id(my_servo).write(-1.0);
+          id(current_angle) = 0.0;
+          id(boot_testing) = false;
+          ESP_LOGI("boot", "Boot test done.");
 
 esp8266:
   board: nodemcuv2
@@ -63,10 +84,17 @@ display:
     model: "SSD1306 128x64"
     address: 0x3C
     id: oled
+    update_interval: 200ms
     lambda: |-
-      it.printf(0, 0, id(font_large), "Servo");
-      it.printf(0, 28, id(font_large), "%.0f deg", id(servo_angle).state);
-      it.printf(0, 52, id(font_small), id(servo_angle).state == 180 ? "TRIGGERED" : "STANDBY");
+      if (id(boot_testing)) {
+        it.printf(0, 0, id(font_large), "Testing");
+        it.printf(0, 28, id(font_large), "180 deg");
+        it.printf(0, 52, id(font_small), "BOOT TEST");
+      } else {
+        it.printf(0, 0, id(font_large), "Servo");
+        it.printf(0, 28, id(font_large), "%.0f deg", id(servo_angle).state);
+        it.printf(0, 52, id(font_small), id(servo_angle).state == 180 ? "TRIGGERED" : "STANDBY");
+      }
 
 font:
   - file: "gfonts://Roboto"
@@ -99,6 +127,10 @@ globals:
     type: float
     restore_value: false
     initial_value: '0.0'
+  - id: boot_testing
+    type: bool
+    restore_value: false
+    initial_value: 'false'
 
 sensor:
   - platform: template
