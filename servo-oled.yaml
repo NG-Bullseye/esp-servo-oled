@@ -28,16 +28,16 @@ esp8266:
 # Network
 # ---------------------------------------------------------------------------
 wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
+  ssid: !env_var ESPHOME_WIFI_SSID
+  password: !env_var ESPHOME_WIFI_PASSWORD
 
 api:
   encryption:
-    key: !secret api_key
+    key: !env_var ESPHOME_API_KEY
 
 ota:
   - platform: esphome
-    password: !secret ota_password
+    password: !env_var ESPHOME_OTA_PASSWORD
 
 logger:
   level: INFO
