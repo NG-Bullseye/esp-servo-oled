@@ -6,15 +6,15 @@ ESPHome project: MC-410 servo + SSD1306 OLED display on ESP32 NodeMCU, controlle
 
 ## Hardware
 
-**NodeMCU ESP32**
+**NodeMCU v2 (ESP8266)**
 
 ### Servo — MC-410 Standard Modelcraft
 
-| Cable | Color | ESP32 Pin |
-|-------|-------|-----------|
+| Cable | Color | NodeMCU Pin |
+|-------|-------|-------------|
 | GND | Brown | GND |
 | VCC | Red | VIN (5V from USB) |
-| Signal | Orange | GPIO 13 |
+| Signal | Orange | D7 (GPIO13) |
 
 > ⚠️ Servo requires 5V — use VIN, not 3.3V. Signal at 3.3V logic level works fine with MC-410.
 >
@@ -22,12 +22,12 @@ ESPHome project: MC-410 servo + SSD1306 OLED display on ESP32 NodeMCU, controlle
 
 ### OLED Display — SSD1306 128x64 I2C
 
-| Cable | Color | ESP32 Pin |
-|-------|-------|-----------|
+| Cable | Color | NodeMCU Pin |
+|-------|-------|-------------|
 | VCC | Red | 3.3V |
 | GND | Blue | GND |
-| SCL | Orange | GPIO 22 |
-| SDA | White | GPIO 21 |
+| SCL | Orange | D1 (GPIO5) |
+| SDA | White | D2 (GPIO4) |
 
 ---
 
@@ -39,10 +39,10 @@ ESP32 NodeMCU
 │ VIN  ───────────────┼──── Servo Red    (5V)
 │ GND  ───────────────┼──┬─ Servo Brown  (GND)
 │                     │  └─ OLED Blue   (GND)
-│ GPIO13 ─────────────┼──── Servo Orange (Signal)
+│ D7 (GPIO13) ────────┼──── Servo Orange (Signal)
 │ 3.3V ───────────────┼──── OLED Red    (VCC)
-│ GPIO22 (SCL) ───────┼──── OLED Orange (SCL)
-│ GPIO21 (SDA) ───────┼──── OLED White  (SDA)
+│ D1 (GPIO5/SCL) ─────┼──── OLED Orange (SCL)
+│ D2 (GPIO4/SDA) ─────┼──── OLED White  (SDA)
 └─────────────────────┘
 ```
 

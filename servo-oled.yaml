@@ -1,30 +1,28 @@
 # =============================================================================
 # ESPHome: Servo + OLED Display
 # =============================================================================
-# Hardware: NodeMCU ESP32
-# Servo:    MC-410 Standard Modelcraft Servo → GPIO 13
-# OLED:     SSD1306 128x64 I2C → GPIO 21 (SDA), GPIO 22 (SCL)
+# Hardware: NodeMCU v2 (ESP8266)
+# Servo:    MC-410 Standard Modelcraft Servo → D7 (GPIO13)
+# OLED:     SSD1306 128x64 I2C → D2/GPIO4 (SDA), D1/GPIO5 (SCL)
 #
 # Wiring — Servo MC-410:
 #   Brown  → GND
 #   Red    → VIN (5V from USB)
-#   Orange → GPIO 13 (PWM Signal)
+#   Orange → D7 (GPIO13, PWM Signal)
 #
 # Wiring — OLED Display:
 #   Red    → 3.3V
 #   Blue   → GND
-#   Orange → GPIO 22 (SCL)
-#   White  → GPIO 21 (SDA)
+#   Orange → D1 (GPIO5, SCL)
+#   White  → D2 (GPIO4, SDA)
 # =============================================================================
 
 esphome:
   name: servo-oled
   friendly_name: Servo OLED
 
-esp32:
-  board: esp32dev
-  framework:
-    type: arduino
+esp8266:
+  board: nodemcuv2
 
 # ---------------------------------------------------------------------------
 # Network
@@ -48,8 +46,8 @@ logger:
 # I2C — OLED
 # ---------------------------------------------------------------------------
 i2c:
-  sda: GPIO21
-  scl: GPIO22
+  sda: GPIO4   # D2
+  scl: GPIO5   # D1
   scan: true
 
 # ---------------------------------------------------------------------------
@@ -74,12 +72,12 @@ font:
     size: 12
 
 # ---------------------------------------------------------------------------
-# Servo Output (LEDC PWM)
+# Servo Output (ESP8266 PWM)
 # ---------------------------------------------------------------------------
 output:
-  - platform: ledc
+  - platform: esp8266_pwm
     id: servo_pwm
-    pin: GPIO13
+    pin: GPIO13  # D7
     frequency: 50 Hz
 
 servo:
