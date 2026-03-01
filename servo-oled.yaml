@@ -20,27 +20,6 @@
 esphome:
   name: servo-oled
   friendly_name: Servo OLED
-  on_boot:
-    priority: -100
-    then:
-      - delay: 2s
-      - lambda: |-
-          ESP_LOGI("boot", "Boot test starting...");
-          id(boot_testing) = true;
-          id(my_servo).write(-1.0);
-          id(current_angle) = 0.0;
-      - delay: 1s
-      - lambda: |-
-          ESP_LOGI("boot", "Moving to 180...");
-          id(my_servo).write(1.0);
-          id(current_angle) = 180.0;
-      - delay: 1s
-      - lambda: |-
-          ESP_LOGI("boot", "Back to 0...");
-          id(my_servo).write(-1.0);
-          id(current_angle) = 0.0;
-          id(boot_testing) = false;
-          ESP_LOGI("boot", "Boot test done.");
 
 esp8266:
   board: nodemcuv2
@@ -56,6 +35,9 @@ wifi:
     gateway: 192.168.1.1
     subnet: 255.255.255.0
   min_auth_mode: WPA2
+  power_save_mode: none
+  on_connect:
+    - lambda: id(wifi_ready) = true;
 
 api:
   encryption:
@@ -64,6 +46,10 @@ api:
 ota:
   - platform: esphome
     password: !env_var ESPHOME_OTA_PASSWORD
+
+safe_mode:
+  num_attempts: 3
+  reboot_timeout: 3min
 
 logger:
   level: INFO
@@ -84,12 +70,11 @@ display:
     model: "SSD1306 128x64"
     address: 0x3C
     id: oled
-    update_interval: 200ms
+    update_interval: 1s
     lambda: |-
-      if (id(boot_testing)) {
-        it.printf(0, 0, id(font_large), "Testing");
-        it.printf(0, 28, id(font_large), "180 deg");
-        it.printf(0, 52, id(font_small), "BOOT TEST");
+      if (!id(wifi_ready)) {
+        it.printf(0, 0, id(font_large), "Connecting");
+        it.printf(0, 28, id(font_small), "WiFi...");
       } else {
         it.printf(0, 0, id(font_large), "Servo");
         it.printf(0, 28, id(font_large), "%.0f deg", id(servo_angle).state);
@@ -120,14 +105,14 @@ servo:
     max_level: 10.0%  # ~2.0ms pulse  → 180°
 
 # ---------------------------------------------------------------------------
-# State — current angle
+# State
 # ---------------------------------------------------------------------------
 globals:
   - id: current_angle
     type: float
     restore_value: false
     initial_value: '0.0'
-  - id: boot_testing
+  - id: wifi_ready
     type: bool
     restore_value: false
     initial_value: 'false'
@@ -147,18 +132,16 @@ sensor:
 # Scripts
 # ---------------------------------------------------------------------------
 script:
-  # Move servo to a specific angle (0–180)
   - id: move_to_angle
     parameters:
       angle: float
     then:
       - lambda: |-
-          float level = (angle / 180.0f) * 2.0f - 1.0f;  // map 0-180 → -1.0 to 1.0
+          float level = (angle / 180.0f) * 2.0f - 1.0f;
           id(my_servo).write(level);
           id(current_angle) = angle;
           ESP_LOGI("servo", "Moving to %.0f deg (level=%.3f)", angle, level);
 
-  # Trigger: move to 180°, wait 1s, return to 0°
   - id: trigger_180
     then:
       - script.execute:
